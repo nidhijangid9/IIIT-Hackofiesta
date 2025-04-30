@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MCQ Quiz</title>
+    <style>
+         * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .score-display {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.8rem 1.5rem;
+        border-radius: 12px;
+        backdrop-filter: blur(5px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .score-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    .score-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #e94560;
+    }
+
+    .level-badge {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .level-icon {
+        font-size: 1.2rem;
+    }
+
+    .level-easy {
+        color: #2ecc71;
+        border: 1px solid #2ecc71;
+    }
+
+    .level-medium {
+        color: #f1c40f;
+        border: 1px solid #f1c40f;
+    }
+
+    .level-hard {
+        color: #e74c3c;
+        border: 1px solid #e74c3c;
+    }
+
+    /* Rest of your existing styles remain the same */
+    .quiz-header {
+        margin-bottom: 2rem;
+        padding-top: 2rem;
+    }
+
+    body {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        padding: 2rem;
+    }
+
+    .quiz-container {
+        width: 90%;
+        max-width: 800px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+        
+     
+       
+
+      
+
+        .question-badge {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e94560;
+            padding: 0.8rem 2rem;
+            border-radius: 0 0 15px 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+        }
+
+        .question {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 3rem 0;
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .question::before {
+            content: 'Q';
+            position: absolute;
+            left: -20px;
+            top: -40px;
+            font-size: 8rem;
+            color: rgba(255, 255, 255, 0.05);
+            z-index: -1;
+            font-weight: bold;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+            border-color: #e94560;
+            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.2);
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .option:hover::before {
+            left: 100%;
+        }
+
+        .progress-container {
+            margin-top: 3rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress {
+            width: 30%;
+            height: 100%;
+            background: linear-gradient(90deg, #e94560, #ff6b81);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .message {
+            font-size: 1.5rem;
+            text-align: center;
+            padding: 2rem;
+            color: #fff;
+        }
+
+        .radio-hidden {
+            display: none;
+        }
+
+        .radio-hidden:checked + label {
+            background: rgba(233, 69, 96, 0.2);
+            border-color: #e94560;
+            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.3);
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 1.2rem;
+            margin-top: 2rem;
+            background: linear-gradient(135deg, #e94560, #ff6b81);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-container {
+                padding: 2rem;
+                width: 95%;
+            }
+            
+            .question {
+                font-size: 1.4rem;
+            }
+            
+            body {
+                padding: 1rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .quiz-container > * {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        {% if message %}
+            <div class="message">
+                {{ message }}
+                <div class="score-display">
+                    <span class="score-label">Final Score</span>
+                    <span class="score-value">{{ score }}</span>
+                </div>
+            </div>
+        {% else %}
+            <div class="level-badge level-{{ question.difficulty }}">
+                <span class="level-icon">
+                    {% if question.difficulty == 'easy' %}🟢
+                    {% elif question.difficulty == 'medium' %}🟡
+                    {% else %}🔴
+                    {% endif %}
+                </span>
+                <span>Level: {{ question.difficulty|title }}</span>
+            </div>
+            <div class="score-display">
+                <span class="score-label">Score</span>
+                <span class="score-value">{{ score }}</span>
+            </div>
+            <div class="question-badge">Question {{ answered_count|add:"1" }}/{{ total_questions }}</div>
+            <div class="question">
+                {{ question.text }}
+            </div>
+            <form method="post" action="{% url 'submit_answer' %}">
+                {% csrf_token %}
+                <input type="hidden" name="question_id" value="{{ question.id }}">
+                <div class="options">
+                    <input type="radio" id="option1" name="selected_option" value="{{ question.option1 }}" class="radio-hidden">
+                    <label for="option1" class="option">{{ question.option1 }}</label>
+                    
+                    <input type="radio" id="option2" name="selected_option" value="{{ question.option2 }}" class="radio-hidden">
+                    <label for="option2" class="option">{{ question.option2 }}</label>
+                    
+                    <input type="radio" id="option3" name="selected_option" value="{{ question.option3 }}" class="radio-hidden">
+                    <label for="option3" class="option">{{ question.option3 }}</label>
+                    
+                    <input type="radio" id="option4" name="selected_option" value="{{ question.option4 }}" class="radio-hidden">
+                    <label for="option4" class="option">{{ question.option4 }}</label>
+                </div>
+                <button type="submit" class="submit-btn">Submit Answer</button>
+            </form>
+        {% endif %}
+    </div>
+</body>
+</html>
